@@ -1,0 +1,92 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+* {margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  font-family: 'Open Sans', arial;
+  background-color: #202020;
+  color: #f1f1f1;
+}
+
+a {
+  color: #33ACFF;
+}
+
+a:hover {
+  color: #FF6B33;
+}
+
+h3 {
+  font-weight: 400;
+  margin-bottom: 2%;
+}
+
+  h3 span {
+    font-size: .7em;
+    margin-left: 10px;
+  }
+
+.page-wrap {
+  width: 100%;
+  overflow: hidden;
+  padding: 0 2%;
+}
+
+.site-title {
+  margin: 2% 0;
+  border-bottom: 2px solid #f1f1f1;
+  padding-bottom: 2%;
+}
+
+.project {
+  width: 49%;
+  float: left;
+  margin-right: 2%;
+}
+
+  .project:nth-of-type(2) {
+    margin-right: 0;
+  }
+
+.project-header {
+  margin-bottom: 20px;
+}
+
+  .project-description {
+    color: #808080;
+  }
+
+  .project-links {
+    margin: 2%;
+  }
+
+    .project-links li {
+      margin-left: 30px;
+    }
+
+.project-issues-list {
+  margin-bottom: 2%;
+  background-color: #252525;
+  border: 1px solid #404040;
+  border-radius: 5px;
+}
+
+  .project-issues-list li {
+    list-style: none;
+    border-bottom: 1px solid #404040;
+  }
+
+    .project-issues-list li.no-issues {
+      padding: 10px;
+    }
+
+    .project-issues-list li:last-child {
+      border-bottom: 0;
+    }
+
+    .project-issues-list li a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      font-size: .9em;
+    }
