@@ -49,7 +49,7 @@
             get_commit_list: function(data, repo) {
               $.each(data[0], function(i, result) {
                 CC_HUB.push_to_commit_list({
-                  url: result.url,
+                  url: result.html_url,
                   repo: repo,
                   message: result.commit.message,
                   time: result.commit.committer.date
