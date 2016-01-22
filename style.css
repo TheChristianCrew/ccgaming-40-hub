@@ -1,92 +1,154 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
-* {margin:0;padding:0;box-sizing:border-box;}
+* {margin:0;padding:0;}
+
+html {
+  font-size: 14px;
+}
 
 body {
   font-family: 'Open Sans', arial;
-  background-color: #202020;
-  color: #f1f1f1;
+  background-color: #dddddd;
+  color: #303030;
+  padding: 0 20px;
 }
 
 a {
-  color: #33ACFF;
-}
-
-a:hover {
   color: #FF6B33;
 }
 
-h3 {
-  font-weight: 400;
-  margin-bottom: 2%;
+a:hover {
+  color: #FF9E1A;
 }
 
-  h3 span {
-    font-size: .7em;
-    margin-left: 10px;
+h2 {
+  background-color: #E74C3C;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  padding: 5px 10px;
+}
+
+  h2 span {
+    font-weight: normal;
+    font-size: .8em;
+    float: right;
+    margin-top: 2px;
   }
 
+  h2 span strong {
+    padding-right: 10px;
+  }
+
+h3 {
+  margin: 20px 0 5px 0;
+}
+
 .page-wrap {
-  width: 100%;
-  overflow: hidden;
-  padding: 0 2%;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.site-header {
+  text-align: center;
+  margin: 20px 0;
 }
 
 .site-title {
-  margin: 2% 0;
-  border-bottom: 2px solid #f1f1f1;
-  padding-bottom: 2%;
+  border-bottom: 1px solid #b2b2b2;
+  padding-bottom: 5px;
+  font-size: 2rem;
+  font-weight: normal;
 }
 
-.project {
-  width: 49%;
-  float: left;
-  margin-right: 2%;
+.site-tagline {
+  border-top: 1px solid #fbfbfb;
+  padding-top: 5px;
+  display: block;
+  text-transform: uppercase;
+  font-size: .8rem;
+  letter-spacing: 2px;
 }
 
-  .project:nth-of-type(2) {
-    margin-right: 0;
-  }
-
-.project-header {
+.site-intro {
   margin-bottom: 20px;
 }
 
-  .project-description {
-    color: #808080;
+  .site-intro p {
+    margin-bottom: 15px;
   }
 
-  .project-links {
-    margin: 2%;
+  .site-intro li {
+    margin-left: 30px;
   }
 
-    .project-links li {
-      margin-left: 30px;
-    }
-
-.project-issues-list {
-  margin-bottom: 2%;
-  background-color: #252525;
-  border: 1px solid #404040;
-  border-radius: 5px;
+.row {
+  margin-bottom: 20px;
 }
 
-  .project-issues-list li {
-    list-style: none;
-    border-bottom: 1px solid #404040;
+.row:after {
+  display: block;
+  content: ' ';
+  clear: both;
+}
+
+.col {
+  width: 49%;
+  margin-right: 2%;
+  float: left;
+}
+
+@media screen and (max-width: 700px) {
+  .col {
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+}
+
+  .col:last-of-type {
+    margin-right: 0;
   }
 
-    .project-issues-list li.no-issues {
+.list {
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, .2);
+}
+
+  .list li {
+    list-style: none;
+    border-bottom: 1px solid #dddddd;
+  }
+
+    .list li.no-issues {
       padding: 10px;
     }
 
-    .project-issues-list li:last-child {
+    .list li:last-child {
       border-bottom: 0;
     }
 
-    .project-issues-list li a {
+    .list li a {
       display: block;
-      padding: 10px;
+      padding: 5px 10px;
       text-decoration: none;
+      color: #505050;
+      font-size: .9em;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .list li a:hover {
+      color: #D68910;
+    }
+
+    .list li a .details {
+      color: #505050;
+      font-weight: normal;
       font-size: .9em;
     }
+
+      .list li a .repo.WordPress { color: #2874A6; }
+      .list li a .repo.phpBB { color: #6C3483; }

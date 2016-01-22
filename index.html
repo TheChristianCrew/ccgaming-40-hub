@@ -4,37 +4,114 @@
     <title>CCGaming 4.0 Project Hub</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="vendor/jquery.timeago.js"></script>
     <script>
       $(document).ready(function() {
 
-        var api_base_url = 'https://api.github.com';
-        var organization_name = 'TheChristianCrew';
+        /**
+         * Load each endpoint before proceeding
+         */
+        $.when(
+          $.getJSON('https://api.github.com/repos/TheChristianCrew/wp_christiancrew/issues?milestone=1'),
+          $.getJSON('https://api.github.com/repos/TheChristianCrew/wp_christiancrew/commits'),
+          $.getJSON('https://api.github.com/repos/TheChristianCrew/phpbb_christiancrew/issues?milestone=1'),
+          $.getJSON('https://api.github.com/repos/TheChristianCrew/phpbb_christiancrew/commits')
+        ).done(function (wp_task_data, wp_commit_data, phpbb_task_data, phpbb_commit_data) {
 
-        CC_HUB = {
+          // Declare variables to hold our list data
+          var task_list = [], commit_list = [];
 
-          // Returns list of issues
-          list_issues: function(repo, milestone_number) {
+          CC_HUB = {
 
-            // Build endpoint
-            var endpoint = api_base_url +'/repos/'+ organization_name +'/'+ repo +'/issues?milestone='+ milestone_number;
+            /**
+             * Add up all open issues from requested repositories
+             *
+             * @return int Number of issues that are open
+             */
+            get_open_issues: function() {
+              return wp_task_data[0][0].milestone.open_issues + phpbb_task_data[0][0].milestone.open_issues;
+            },
 
-            // Get data
-            $.getJSON(endpoint, function(result) {
-              if (result.length != 0) {
-                $.each(result, function(i) {
-                  console.log(repo +':'+ result);
-                  $('#'+ repo).append('<li><a href="'+ result[i].html_url +'">'+ result[i].title +'</a></li>');
+            /**
+             * Add up all closed issues from requested repositories
+             *
+             * @return int Number of issues that are closed
+             */
+            get_closed_issues: function() {
+              return wp_task_data[0][0].milestone.closed_issues + phpbb_task_data[0][0].milestone.closed_issues;
+            },
+
+            /**
+             * Iterate through the commit data and push necessary data to the commit_list array
+             *
+             * @return none
+             */
+            get_commit_list: function(data, repo) {
+              $.each(data[0], function(i, result) {
+                CC_HUB.push_to_commit_list({
+                  url: result.url,
+                  repo: repo,
+                  message: result.commit.message,
+                  time: result.commit.committer.date
                 });
-              } else {
-                $('#'+ repo).append('<li class="no-issues">No issues</li>');
-              }
-            });
+              });
+            },
+            push_to_commit_list: function(results) { commit_list.push(results); },
+
+            /**
+             * Iterate through the task data and push necessary data to the task_list array
+             *
+             * @return none
+             */
+            get_task_list: function(data, repo) {
+              $.each(data[0], function(i, result) {
+                CC_HUB.push_to_task_list({
+                  repo: repo,
+                  created: result.created_at,
+                  title: result.title,
+                  url: result.html_url
+                });
+              });
+            },
+            push_to_task_list: function(results) { task_list.push(results); }
+
           }
 
-        }
+          // Fire our methods
+          CC_HUB.get_task_list(wp_task_data, 'WordPress');
+          CC_HUB.get_commit_list(wp_commit_data, 'WordPress');
+          CC_HUB.get_task_list(phpbb_task_data, 'phpBB');
+          CC_HUB.get_commit_list(phpbb_commit_data, 'phpBB');
 
-        CC_HUB.list_issues('wp_christiancrew', 1);
-        CC_HUB.list_issues('phpbb_christiancrew', 1);
+          // Get number of issues opened/closed
+          $('#open_issues').append(CC_HUB.get_open_issues());
+          $('#closed_issues').append(CC_HUB.get_closed_issues());
+
+          // Reorder the commit list so they display chronologically
+          commit_list.sort(function(a, b) {
+              var dateA = new Date(a.time), dateB = new Date(b.time);
+              return dateB-dateA;
+          });
+
+          // Reorder the task list so they display chronologically
+          task_list.sort(function(a, b) {
+              var dateA = new Date(a.created), dateB = new Date(b.created);
+              return dateB-dateA;
+          });
+
+          // Output the commit list
+          $.each(commit_list, function(i, commit) {
+            $('#commit-list').append('<li><a href="'+ commit.url +'">'+ commit.message +' <p class="details">Change made '+ $.timeago(commit.time) +' in <span class="repo '+ commit.repo +'">'+ commit.repo +'</span></p></a></li>');
+            return i<9;
+          });
+
+          // Output the task list
+          $.each(task_list, function(i, task) {
+            $('#task-list').append('<li><a href="'+ task.url +'">'+ task.title +' <p class="details">Task created '+ $.timeago(task.created) +' in <span class="repo '+ task.repo +'">'+ task.repo +'</span></p></a></li>');
+            return i<9;
+          });
+
+        });
 
       });
     </script>
@@ -43,39 +120,54 @@
 
     <div class="page-wrap">
 
-      <h1 class="site-title">CCGaming 4.0 Project Hub</h1>
+      <header class="site-header">
+        <h1 class="site-title">Christian Crew Gaming</h1>
+        <p class="site-tagline">4.0 Development Hub</p>
+      </header>
 
-      <section class="project">
+      <div class="site-intro">
 
-        <header class="project-header">
-          <h2 class="project-title">wp_christiancrew</h2>
-          <p class="project-description">Issues/tasks related to the WordPress theme.</p>
-          <ul class="project-links">
-            <li><a href="#">GitHub Repository</a></li>
-            <li><a href="#">Development Site</a></li>
-          </ul>
-        </header>
+        <p>Welcome to the development hub for CCGaming 4.0. All development takes place on <a href="https://github.com/TheChristianCrew">GitHub</a> through three main repositories:</p>
 
-        <h3>Recent Changes <span><a href="#">View More</a></span></h3>
+        <h3>1. WordPress Theme</h3>
+        <p>WordPress is the software used to power the front-facing website (i.e. any URLs containing only "ccgaming.com"). The WordPress theme is developed under the <a href="https://github.com/TheChristianCrew/wp_christiancrew">wp_christiancrew</a> repository. Any tasks and/or issues related to the <strong>WordPress theme</strong> should be submitted to <a href="https://github.com/TheChristianCrew/wp_christiancrew/issues">this repository's issues list</a>.</p>
 
-        <h3>Issues / Tasks <span># Open / # Closed | <a href="#">Report Issue</a></span></h3>
-        <ul class="project-issues-list" id="wp_christiancrew"></ul>
+        <h3>2. phpBB Theme</h3>
+        <p>phpBB is the software used to power the forums (i.e. "forums.ccgaming.com"). The phpBB theme is developed under the <a href="https://github.com/TheChristianCrew/phpbb_christiancrew">phpbb_christiancrew</a> repository. Any tasks and/or issues related to the <strong>phpBB theme</strong> should be submitted to <a href="https://github.com/TheChristianCrew/phpbb_christiancrew/issues">this repository's issues list</a>.</p>
 
-      </section>
+        <h3>3. Application System</h3>
+        <p>The application system is an extension to phpBB and is developed under the <a href="https://github.com/TheChristianCrew/phpbb_ext_apps">phpbb_ext_apps</a> repository. Any tasks and/or issues related to the <strong>application system</strong> should be submitted to <a href="https://github.com/TheChristianCrew/phpbb_ext_apps">this repository's issues list</a>.</p>
 
-      <section class="project">
+        <h3>Guidelines</h3>
+        <ul>
+          <li>When reporting issues in any of the above repositories against "4.0", the issue MUST be assigned to the 4.0 milestone.</li>
+        </ul>
 
-        <header class="project-header">
-          <h2 class="project-title">phpbb_christiancrew</h2>
-          <p class="project-description">Issues/tasks related to the phpBB theme.</p>
-        </header>
+        <h3>Links</h3>
+        <ul>
+          <li><a href="http://develop.keithbrinks.com/ccgaming">CCGaming Dev Site (WordPress)</a></li>
+          <li><a href="http://develop.keithbrinks.com/ccgaming/forums">CCGaming Dev Site (phpBB)</a></li>
+        </ul>
 
-        <h3>Recent Changes</h3>
+      </div>
 
-        <h3>Issues / Tasks</h3>
-        <ul class="project-issues-list" id="phpbb_christiancrew"></ul>
+      <div class="row">
 
-      </section>
+        <div class="col left">
+          <div class="list commits">
+            <h2>Recent Changes</h2>
+            <ul id="commit-list"></ul>
+          </div>
+        </div>
+
+        <div class="col right">
+          <div class="list tasks">
+            <h2>Recent Tasks <span>Total Open: <strong id="open_issues"></strong> Total Closed: <strong id="closed_issues"></strong></span></h2>
+            <ul id="task-list" class="list"></ul>
+          </div>
+        </div>
+
+      </div>
 
     </div>
 
